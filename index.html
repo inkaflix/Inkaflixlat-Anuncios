@@ -12,7 +12,9 @@
       padding: 30px 20px;
       text-align: center;
     }
-    h1 { color: #ff4757; }
+    h1 {
+      color: #ff4757;
+    }
     input, button {
       padding: 12px;
       border: none;
@@ -20,6 +22,9 @@
       margin-top: 10px;
       width: 90%;
       max-width: 400px;
+    }
+    input {
+      font-size: 16px;
     }
     button {
       background-color: #ff4757;
@@ -30,6 +35,7 @@
     .resultado {
       margin-top: 20px;
       font-size: 16px;
+      word-wrap: break-word;
     }
     a {
       color: #00ff99;
@@ -44,13 +50,10 @@
   <input type="url" id="url" placeholder="https://tuenlace.com" required />
   <br>
   <button onclick="acortar()">Acortar Enlace</button>
+
   <div class="resultado" id="resultado"></div>
 
   <script>
-    const BIN_ID = "688596757b4b8670d8a7ed45";
-    const API_KEY = "$2a$10$k7afWuA7htBGhmlrfwXfFOZYXBlp/tWdN7P4Wrut2FPTh7Em2Iuji";
-    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
     function generarCodigo() {
       const caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let codigo = '';
@@ -60,7 +63,7 @@
       return codigo;
     }
 
-    async function acortar() {
+    function acortar() {
       const enlace = document.getElementById("url").value;
       if (!enlace.startsWith("http")) {
         alert("El enlace debe comenzar con http o https");
@@ -68,33 +71,15 @@
       }
 
       const codigo = generarCodigo();
-
-      // Obtener enlaces actuales
-      const respuesta = await fetch(BASE_URL, {
-        headers: { "X-Master-Key": API_KEY }
-      });
-      const datos = await respuesta.json();
-      const enlaces = datos.record;
-
-      // Agregar nuevo enlace
-      enlaces[codigo] = enlace;
-
-      // Guardar en JSONbin
-      await fetch(BASE_URL, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY
-        },
-        body: JSON.stringify(enlaces)
-      });
-
+      localStorage.setItem(codigo, enlace); // Guarda en localStorage
       const enlaceFinal = `${location.origin}/redirect.html?c=${codigo}`;
+
       document.getElementById("resultado").innerHTML = `
         ✅ ¡Tu enlace acortado!<br>
         <a href="${enlaceFinal}" target="_blank">${enlaceFinal}</a>
       `;
     }
   </script>
+
 </body>
 </html>
