@@ -35,38 +35,43 @@
   <button id="boton" class="boton">🔗 Enlace Generado</button>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const codigo = params.get("c");
+    const codigo = new URLSearchParams(window.location.search).get("c");
+    const BIN_ID = "TU_BIN_ID_AQUÍ";
+    const API_KEY = "TU_API_KEY_AQUÍ";
+    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
     const boton = document.getElementById("boton");
     const contador = document.getElementById("contador");
 
     if (!codigo) {
       document.body.innerHTML = "<h2>❌ Código inválido</h2>";
     } else {
-      fetch("enlaces.json")
-        .then(res => res.json())
-        .then(data => {
-          const destino = data[codigo];
-          if (!destino) {
-            document.body.innerHTML = "<h2>❌ Enlace no encontrado</h2>";
-            return;
-          }
+      fetch(BASE_URL, {
+        headers: { "X-Master-Key": API_KEY }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const destino = data.record[codigo];
+        if (!destino) {
+          document.body.innerHTML = "<h2>❌ Enlace no encontrado</h2>";
+          return;
+        }
 
-          let segundos = 15;
-          const interval = setInterval(() => {
-            segundos--;
-            contador.textContent = segundos;
-            if (segundos <= 0) {
-              clearInterval(interval);
-              contador.style.display = "none";
-              boton.style.display = "inline-block";
-              boton.onclick = () => window.location.href = destino;
-            }
-          }, 1000);
-        })
-        .catch(() => {
-          document.body.innerHTML = "<h2>⚠️ Error al cargar los enlaces</h2>";
-        });
+        let segundos = 15;
+        const interval = setInterval(() => {
+          segundos--;
+          contador.textContent = segundos;
+          if (segundos <= 0) {
+            clearInterval(interval);
+            contador.style.display = "none";
+            boton.style.display = "inline-block";
+            boton.onclick = () => window.location.href = destino;
+          }
+        }, 1000);
+      })
+      .catch(() => {
+        document.body.innerHTML = "<h2>⚠️ Error al cargar los enlaces</h2>";
+      });
     }
   </script>
 </body>
