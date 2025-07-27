@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -28,74 +27,102 @@
       border-radius: 30px;
       cursor: pointer;
     }
+    #bloqueoAdblock {
+      display: none;
+      background: #ff0000;
+      padding: 20px;
+      margin-top: 30px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <h1>Generando enlace...</h1>
-  
-  <!-- banner 300x50-->
-<script type="text/javascript">
-	atOptions = {
-		'key' : '8c85d5a9d0f8501d6be4c7180baf014e',
-		'format' : 'iframe',
-		'height' : 50,
-		'width' : 320,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//forgavedisciplinetolerance.com/8c85d5a9d0f8501d6be4c7180baf014e/invoke.js"></script>
 
-  <!-- fin de anuncio -->
-  
+  <!-- Elemento trampa para detectar AdBlock -->
+  <div id="pruebaAd" style="width:1px; height:1px; position:absolute; left:-9999px;">
+    <script>
+      document.write("<img src='https://example.com/publicidad.jpg' class='adsbygoogle' />");
+    </script>
+  </div>
+
+  <!-- Bloqueo si se detecta AdBlock -->
+  <div id="bloqueoAdblock">❌ Por favor desactiva el bloqueador de anuncios para continuar.</div>
+
+  <!-- banner de publicidad -->
+  <script type="text/javascript">
+    atOptions = {
+      'key': '8c85d5a9d0f8501d6be4c7180baf014e',
+      'format': 'iframe',
+      'height': 50,
+      'width': 320,
+      'params': {}
+    };
+  </script>
+  <script type="text/javascript" src="//forgavedisciplinetolerance.com/8c85d5a9d0f8501d6be4c7180baf014e/invoke.js"></script>
+
   <div class="contador" id="contador">15</div>
   <button id="boton" class="boton">🔗 Enlace Generado</button>
 
   <script>
+    function detectarAdblock(callback) {
+      setTimeout(() => {
+        const prueba = document.querySelector('#pruebaAd');
+        const visible = prueba.offsetHeight > 0 && prueba.offsetWidth > 0;
+        callback(!visible); // Si no es visible, AdBlock está activo
+      }, 500);
+    }
+
     const params = new URLSearchParams(window.location.search);
     const codigo = params.get("c");
     const boton = document.getElementById("boton");
     const contador = document.getElementById("contador");
+    const bloqueoAdblock = document.getElementById("bloqueoAdblock");
 
-    if (!codigo) {
-      document.body.innerHTML = "<h2>❌ Código inválido</h2>";
-    } else {
-      fetch("enlaces.json")
-        .then(res => res.json())
-        .then(data => {
-          const destino = data[codigo];
-          if (!destino) {
-            document.body.innerHTML = "<h2>❌ Enlace no encontrado</h2>";
-            return;
-          }
+    detectarAdblock(adblockDetectado => {
+      if (adblockDetectado) {
+        bloqueoAdblock.style.display = "block";
+        contador.style.display = "none";
+        return;
+      }
 
-          let segundos = 15;
-          const interval = setInterval(() => {
-            segundos--;
-            contador.textContent = segundos;
-            if (segundos <= 0) {
-              clearInterval(interval);
-              contador.style.display = "none";
-              boton.style.display = "inline-block";
-              boton.onclick = () => window.location.href = destino;
+      if (!codigo) {
+        document.body.innerHTML = "<h2>❌ Código inválido</h2>";
+      } else {
+        fetch("enlaces.json")
+          .then(res => res.json())
+          .then(data => {
+            const destino = data[codigo];
+            if (!destino) {
+              document.body.innerHTML = "<h2>❌ Enlace no encontrado</h2>";
+              return;
             }
-          }, 1000);
-        })
-        .catch(() => {
-          document.body.innerHTML = "<h2>⚠️ Error al cargar los enlaces</h2>";
-        });
-    }
+
+            let segundos = 15;
+            const interval = setInterval(() => {
+              segundos--;
+              contador.textContent = segundos;
+              if (segundos <= 0) {
+                clearInterval(interval);
+                contador.style.display = "none";
+                boton.style.display = "inline-block";
+                boton.onclick = () => window.location.href = destino;
+              }
+            }, 1000);
+          })
+          .catch(() => {
+            document.body.innerHTML = "<h2>⚠️ Error al cargar los enlaces</h2>";
+          });
+      }
+    });
   </script>
-  
-  <!-- anuncio banner native -->
+
+  <!-- otros scripts de anuncios -->
   <script async="async" data-cfasync="false" src="//forgavedisciplinetolerance.com/b24f6a1fc496bb28e686ebec0c855bad/invoke.js"></script>
-<div id="container-b24f6a1fc496bb28e686ebec0c855bad"></div>
-  
-  <!-- sociar banner -->
+  <div id="container-b24f6a1fc496bb28e686ebec0c855bad"></div>
+
   <script type='text/javascript' src='//forgavedisciplinetolerance.com/fb/06/9f/fb069fbfcdb36c52543ef55a2bb29155.js'></script>
-  
-  <!-- popur -->
   <script type='text/javascript' src='//forgavedisciplinetolerance.com/fa/47/8d/fa478d1ff8730f3950cd126158b911f6.js'></script>
-  
-  
 </body>
 </html>
