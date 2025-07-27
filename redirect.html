@@ -1,69 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Redirigiendo...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <title>Redireccionando...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      background-color: #0d0b1e;
-      color: white;
-      font-family: Arial, sans-serif;
+      background: #0d0b1e;
+      color: #fff;
       text-align: center;
+      font-family: Arial, sans-serif;
       padding: 40px;
     }
     .contador {
-      font-size: 24px;
-      margin-top: 20px;
+      font-size: 50px;
+      margin: 20px 0;
       color: #00ff99;
     }
     .boton {
       display: none;
-      margin-top: 20px;
-      background-color: #00ff99;
-      color: #0d0b1e;
-      padding: 12px 30px;
+      padding: 12px 25px;
+      background: #00ff99;
+      color: #000;
+      font-weight: bold;
       border: none;
       border-radius: 30px;
-      font-weight: bold;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-  <h1>Espera mientras generamos tu enlace...</h1>
-  <div class="contador">15</div>
-  <button class="boton" id="botonIr">Link Generado</button>
+  <h1>Generando enlace...</h1>
+  <div class="contador" id="contador">15</div>
+  <button id="boton" class="boton">🔗 Enlace Generado</button>
 
   <script>
-    // Obtener código desde ?c=XXXXXX
     const params = new URLSearchParams(window.location.search);
-    const codigo = params.get('c');
-    const enlaceOriginal = localStorage.getItem(codigo);
+    const codigo = params.get("c");
+    const boton = document.getElementById("boton");
+    const contador = document.getElementById("contador");
 
-    if (!enlaceOriginal) {
-      document.body.innerHTML = "<h2>No se encontró el enlace original ❌</h2>";
+    if (!codigo) {
+      document.body.innerHTML = "<h2>❌ Código inválido</h2>";
     } else {
-      let segundos = 15;
-      const contador = document.querySelector(".contador");
-      const boton = document.getElementById("botonIr");
+      fetch("enlaces.json")
+        .then(res => res.json())
+        .then(data => {
+          const destino = data[codigo];
+          if (!destino) {
+            document.body.innerHTML = "<h2>❌ Enlace no encontrado</h2>";
+            return;
+          }
 
-      const interval = setInterval(() => {
-        segundos--;
-        contador.textContent = segundos;
-        if (segundos === 0) {
-          clearInterval(interval);
-          contador.style.display = "none";
-          boton.style.display = "inline-block";
-        }
-      }, 1000);
-
-      boton.addEventListener("click", () => {
-        window.location.href = enlaceOriginal;
-      });
+          let segundos = 15;
+          const interval = setInterval(() => {
+            segundos--;
+            contador.textContent = segundos;
+            if (segundos <= 0) {
+              clearInterval(interval);
+              contador.style.display = "none";
+              boton.style.display = "inline-block";
+              boton.onclick = () => window.location.href = destino;
+            }
+          }, 1000);
+        })
+        .catch(() => {
+          document.body.innerHTML = "<h2>⚠️ Error al cargar los enlaces</h2>";
+        });
     }
   </script>
-
 </body>
 </html>
