@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,13 +13,11 @@
       font-family: Arial, sans-serif;
       padding: 40px;
     }
-
     .contador {
       font-size: 50px;
       margin: 20px 0;
       color: #00ff99;
     }
-
     .boton {
       display: none;
       padding: 12px 25px;
@@ -29,62 +28,37 @@
       border-radius: 30px;
       cursor: pointer;
     }
-
-    #bloqueoAdblock {
-      display: none;
-      background: #ff0000;
-      padding: 20px;
-      margin-top: 30px;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-
-    /* Elemento trampa ocultado por AdBlock */
-    .adsbox {
-      height: 1px;
-      width: 1px;
-      position: absolute;
-      left: -9999px;
-    }
   </style>
 </head>
 <body>
   <h1>Generando enlace...</h1>
+  
+  <!-- banner 300x50-->
+<script type="text/javascript">
+	atOptions = {
+		'key' : '8c85d5a9d0f8501d6be4c7180baf014e',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//forgavedisciplinetolerance.com/8c85d5a9d0f8501d6be4c7180baf014e/invoke.js"></script>
 
-  <!-- Elemento trampa -->
-  <div class="adsbox" id="adtest"></div>
-
-  <!-- Mensaje si hay AdBlock -->
-  <div id="bloqueoAdblock">❌ Por favor desactiva tu bloqueador de anuncios para continuar.</div>
-
-  <!-- Contador y botón -->
+  <!-- fin de anuncio -->
+  
   <div class="contador" id="contador">15</div>
   <button id="boton" class="boton">🔗 Enlace Generado</button>
 
-  <!-- Script de redirección y bloqueo -->
   <script>
-    const adTest = document.getElementById("adtest");
-    const bloqueoAdblock = document.getElementById("bloqueoAdblock");
+    const params = new URLSearchParams(window.location.search);
+    const codigo = params.get("c");
     const boton = document.getElementById("boton");
     const contador = document.getElementById("contador");
 
-    const params = new URLSearchParams(window.location.search);
-    const codigo = params.get("c");
-
-    // Detección de AdBlock
-    window.onload = function () {
-      if (adTest.offsetHeight === 0 || adTest.offsetParent === null) {
-        bloqueoAdblock.style.display = "block";
-        contador.style.display = "none";
-        return;
-      }
-
-      // Código de redirección si no hay AdBlock
-      if (!codigo) {
-        document.body.innerHTML = "<h2>❌ Código inválido</h2>";
-        return;
-      }
-
+    if (!codigo) {
+      document.body.innerHTML = "<h2>❌ Código inválido</h2>";
+    } else {
       fetch("enlaces.json")
         .then(res => res.json())
         .then(data => {
@@ -109,7 +83,19 @@
         .catch(() => {
           document.body.innerHTML = "<h2>⚠️ Error al cargar los enlaces</h2>";
         });
-    };
+    }
   </script>
+  
+  <!-- anuncio banner native -->
+  <script async="async" data-cfasync="false" src="//forgavedisciplinetolerance.com/b24f6a1fc496bb28e686ebec0c855bad/invoke.js"></script>
+<div id="container-b24f6a1fc496bb28e686ebec0c855bad"></div>
+  
+  <!-- sociar banner -->
+  <script type='text/javascript' src='//forgavedisciplinetolerance.com/fb/06/9f/fb069fbfcdb36c52543ef55a2bb29155.js'></script>
+  
+  <!-- popur 
+  <script type='text/javascript' src='//forgavedisciplinetolerance.com/fa/47/8d/fa478d1ff8730f3950cd126158b911f6.js'></script>
+  -->
+  
 </body>
 </html>
